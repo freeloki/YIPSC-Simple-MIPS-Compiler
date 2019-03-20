@@ -1,2 +1,2 @@
-# Yavuz-MIPS-Compiler
-CSE531 - Advanced Topics in Computer Architecture - HW1 - Simple MIPS Compiler
+# YIPSC
+**YIPSC (Yavuz-MIPS-Compiler)** is a simple **_C to MIPS_** compiler. YIPSC should convert simple C programs to **_MARS_** executable MIPS code. 
