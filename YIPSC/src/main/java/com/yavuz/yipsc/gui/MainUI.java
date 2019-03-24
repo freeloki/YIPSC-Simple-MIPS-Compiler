@@ -5,6 +5,9 @@
  */
 package com.yavuz.yipsc.gui;
 
+import com.yavuz.yipsc.utils.CCompiler;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -34,12 +37,17 @@ import javax.swing.filechooser.FileSystemView;
  * @author codegenius
  */
 public class MainUI extends javax.swing.JFrame {
+    
+     private String fileAsString;
+     private String filePath;
+     private CCompiler cCompiler;
 
     /**
      * Creates new form MainUI
      */
     public MainUI() throws IOException {
         initComponents(); 
+        cCompiler = new CCompiler();
                       
      // ImageIcon ii = ImageIcon(this.getClass().getResource("/resources/appIcon.png"));
 
@@ -67,26 +75,35 @@ public class MainUI extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
+        cCodeTextArea = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        mipsCodeTextArea = new javax.swing.JTextArea();
+        explanationLabel = new javax.swing.JLabel();
         uploadCodeBtn = new javax.swing.JButton();
         verifyCodeBtn = new javax.swing.JButton();
         compileCodeBtn = new javax.swing.JButton();
+        infoLabel = new javax.swing.JLabel();
+        infoInputLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("YIPSC");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setIconImages(null);
         setLocation(new java.awt.Point(100, 100));
+        setModalExclusionType(java.awt.Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
         setName("frame0"); // NOI18N
-        setPreferredSize(new java.awt.Dimension(800, 600));
+        setPreferredSize(new java.awt.Dimension(1000, 800));
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        cCodeTextArea.setColumns(20);
+        cCodeTextArea.setRows(5);
+        jScrollPane1.setViewportView(cCodeTextArea);
 
-        jLabel1.setFont(new java.awt.Font("Noto Sans", 1, 12)); // NOI18N
-        jLabel1.setText("Copy/Paste or Upload the C code from file here.");
+        mipsCodeTextArea.setColumns(20);
+        mipsCodeTextArea.setRows(5);
+        jScrollPane2.setViewportView(mipsCodeTextArea);
+
+        explanationLabel.setFont(new java.awt.Font("Noto Sans", 1, 12)); // NOI18N
+        explanationLabel.setText("Copy/Paste or Upload the C code from file here.");
 
         uploadCodeBtn.setFont(new java.awt.Font("Noto Sans", 1, 12)); // NOI18N
         uploadCodeBtn.setText("Upload Code");
@@ -98,27 +115,42 @@ public class MainUI extends javax.swing.JFrame {
 
         verifyCodeBtn.setFont(new java.awt.Font("Noto Sans", 1, 12)); // NOI18N
         verifyCodeBtn.setText("Verify");
+        verifyCodeBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                verifyCodeBtnActionPerformed(evt);
+            }
+        });
 
         compileCodeBtn.setFont(new java.awt.Font("Noto Sans", 1, 12)); // NOI18N
         compileCodeBtn.setText("Compile!");
         compileCodeBtn.setActionCommand("Compile");
 
+        infoLabel.setFont(new java.awt.Font("Noto Sans", 1, 12)); // NOI18N
+        infoLabel.setText("Info:");
+
+        infoInputLabel.setText("Program started.");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 268, Short.MAX_VALUE)
-                        .addComponent(uploadCodeBtn)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(infoInputLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(explanationLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(276, 276, 276)
+                        .addComponent(uploadCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(29, 29, 29)
-                        .addComponent(verifyCodeBtn)
+                        .addComponent(verifyCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(26, 26, 26)
-                        .addComponent(compileCodeBtn))
-                    .addComponent(jScrollPane1))
+                        .addComponent(compileCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(infoLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 814, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -126,13 +158,21 @@ public class MainUI extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(uploadCodeBtn)
-                    .addComponent(verifyCodeBtn)
-                    .addComponent(compileCodeBtn))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(explanationLabel))
+                    .addComponent(uploadCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(verifyCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(compileCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 504, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(47, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(infoLabel)
+                .addGap(1, 1, 1)
+                .addComponent(infoInputLabel)
+                .addContainerGap())
         );
 
         uploadCodeBtn.getAccessibleContext().setAccessibleName("UploadCodeBtn");
@@ -154,6 +194,7 @@ public class MainUI extends javax.swing.JFrame {
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
 			File selectedFile = jfc.getSelectedFile();
 			System.out.println(selectedFile.getAbsolutePath());
+                        filePath = selectedFile.getAbsolutePath();
                         
            try {
                InputStream is = new FileInputStream(selectedFile);
@@ -165,9 +206,9 @@ public class MainUI extends javax.swing.JFrame {
                    sb.append(line).append("\n"); 
                    line = buf.readLine(); 
                }
-               String fileAsString = sb.toString();
+               fileAsString = sb.toString();
                
-               jTextArea1.setText(fileAsString);
+               cCodeTextArea.setText(fileAsString);
 
            } catch (FileNotFoundException ex) {
                Logger.getLogger(MainUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -178,6 +219,28 @@ public class MainUI extends javax.swing.JFrame {
         
 		}
     }//GEN-LAST:event_uploadCodeBtnActionPerformed
+
+    private void verifyCodeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verifyCodeBtnActionPerformed
+        // TODO add your handling code here:
+       /// infoInputLabel.setText("Code verifying is not supported for now.");
+        //infoInputLabel.setForeground(Color.red);
+        
+        boolean result = cCompiler.compileCFile(filePath);
+        
+        System.out.println("RESULT :" + result);
+        if(result) {
+            infoInputLabel.setText("Code compilation successful!");
+            infoInputLabel.setForeground(Color.BLUE);
+            Font f = infoInputLabel.getFont();
+            infoInputLabel.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
+        } else {
+            infoInputLabel.setText("Code compilation failure. Please check your code.");
+            infoInputLabel.setForeground(Color.RED);
+            Font f = infoInputLabel.getFont();
+            infoInputLabel.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
+        }
+            
+    }//GEN-LAST:event_verifyCodeBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -219,10 +282,14 @@ public class MainUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextArea cCodeTextArea;
     private javax.swing.JButton compileCodeBtn;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel explanationLabel;
+    private javax.swing.JLabel infoInputLabel;
+    private javax.swing.JLabel infoLabel;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextArea mipsCodeTextArea;
     private javax.swing.JButton uploadCodeBtn;
     private javax.swing.JButton verifyCodeBtn;
     // End of variables declaration//GEN-END:variables
