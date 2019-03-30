@@ -6,6 +6,7 @@
 package com.yavuz.yipsc.gui;
 
 import com.yavuz.yipsc.utils.CCompiler;
+import com.yavuz.yipsc.utils.CodeParser;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
@@ -91,7 +92,6 @@ public class MainUI extends javax.swing.JFrame {
         setIconImages(null);
         setLocation(new java.awt.Point(100, 100));
         setModalExclusionType(java.awt.Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
-        setName("frame0"); // NOI18N
         setPreferredSize(new java.awt.Dimension(1000, 800));
 
         cCodeTextArea.setColumns(20);
@@ -124,6 +124,11 @@ public class MainUI extends javax.swing.JFrame {
         compileCodeBtn.setFont(new java.awt.Font("Noto Sans", 1, 12)); // NOI18N
         compileCodeBtn.setText("Compile!");
         compileCodeBtn.setActionCommand("Compile");
+        compileCodeBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                compileCodeBtnActionPerformed(evt);
+            }
+        });
 
         infoLabel.setFont(new java.awt.Font("Noto Sans", 1, 12)); // NOI18N
         infoLabel.setText("Info:");
@@ -157,13 +162,14 @@ public class MainUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(14, 14, 14)
                         .addComponent(explanationLabel))
-                    .addComponent(uploadCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(verifyCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(compileCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(uploadCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(verifyCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(compileCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
@@ -241,6 +247,12 @@ public class MainUI extends javax.swing.JFrame {
         }
             
     }//GEN-LAST:event_verifyCodeBtnActionPerformed
+
+    private void compileCodeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileCodeBtnActionPerformed
+        // TODO add your handling code here:
+        
+        new CodeParser(fileAsString);
+    }//GEN-LAST:event_compileCodeBtnActionPerformed
 
     /**
      * @param args the command line arguments
