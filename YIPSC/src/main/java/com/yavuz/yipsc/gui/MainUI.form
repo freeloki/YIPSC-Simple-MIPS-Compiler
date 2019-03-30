@@ -43,20 +43,30 @@
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
                   <Component id="infoInputLabel" max="32767" attributes="0"/>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="explanationLabel" max="32767" attributes="0"/>
-                      <EmptySpace min="-2" pref="276" max="-2" attributes="0"/>
-                      <Component id="uploadCodeBtn" max="32767" attributes="0"/>
-                      <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
-                      <Component id="verifyCodeBtn" max="32767" attributes="0"/>
-                      <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
-                      <Component id="compileCodeBtn" max="32767" attributes="0"/>
-                  </Group>
                   <Component id="infoLabel" alignment="0" min="-2" pref="814" max="-2" attributes="0"/>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="jScrollPane1" max="32767" attributes="0"/>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="jScrollPane1" max="32767" attributes="0"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Component id="explanationLabel" max="32767" attributes="0"/>
+                              <EmptySpace min="-2" pref="128" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="uploadCodeBtn" max="32767" attributes="0"/>
+                              <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
+                              <Component id="verifyCodeBtn" max="32767" attributes="0"/>
+                              <EmptySpace min="-2" pref="54" max="-2" attributes="0"/>
+                              <Component id="Tokenize" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
+                              <Component id="compileCodeBtn" max="32767" attributes="0"/>
+                          </Group>
+                          <Component id="jScrollPane2" max="32767" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -76,6 +86,7 @@
                       <Component id="uploadCodeBtn" alignment="3" max="32767" attributes="0"/>
                       <Component id="verifyCodeBtn" alignment="3" max="32767" attributes="0"/>
                       <Component id="compileCodeBtn" alignment="3" max="32767" attributes="0"/>
+                      <Component id="Tokenize" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -180,6 +191,17 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Program started."/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="Tokenize">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Noto Sans" size="12" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Tokenize"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="TokenizeActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

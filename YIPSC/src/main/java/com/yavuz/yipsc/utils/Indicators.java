@@ -19,4 +19,6 @@ public class Indicators {
     public static final Character SQUARE_BRACKETS_END=']';
     public static final Character COMMA=',';
     public static final Character SHARP='#';
+    public static final Character EQUALITY='=';
+    public static final String COMMENT="//";
 }
