@@ -282,6 +282,8 @@ public class MainUI extends javax.swing.JFrame {
        cCodeTextArea.setText(mTokenizer.removeIncludesAndComments());
        
        mTokenizer.parseIntegerVariables();
+       
+       mTokenizer.parseOperations();
          
     }//GEN-LAST:event_TokenizeActionPerformed
 
