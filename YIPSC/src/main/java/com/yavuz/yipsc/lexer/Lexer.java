@@ -9,7 +9,7 @@ public class Lexer {
    
    private static int index = 0;
    private char peek = ' '; //container for next character.
-   private String parseFile; 
+   private final String parseFile; 
    
    private HashMap words = new HashMap();
    
@@ -34,6 +34,7 @@ public class Lexer {
       reserve( new Word("break",    Tag.BREAK)    );
       reserve( new Word("continue", Tag.CONTINUE) );
       reserve( new Word("return",   Tag.RETURN)   );
+      reserve( new Word("main",     Tag.FUNC)     );
 
       reserve( Word.True );  reserve( Word.False );
 

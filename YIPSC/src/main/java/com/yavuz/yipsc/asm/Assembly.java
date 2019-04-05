@@ -4,12 +4,15 @@ import com.yavuz.yipsc.symbols.*;
 import java.util.*;
 
 public class Assembly {
-    public String assembStr = "";
+    public String assembStr = "# The label 'main' represents the starting point\n" +
+"main:\n";
+    
+    public String dataStr=".data\n";
     private Token look;
     private LexInter lex;   
     public HashMap symbols = new HashMap();
     private int usedtempreg = 0;
-    private int usedfloatreg = 0;
+    private ArrayList<String> wordList = new ArrayList<>();
     
     public Assembly(LexInter l) { 
         lex = l;
@@ -58,7 +61,7 @@ public class Assembly {
         }
         exitstatement();
         
-        
+        assembStr += dataStr;
         return assembStr;
     }
     
@@ -76,7 +79,7 @@ public class Assembly {
     }
     
     private void resetAddresses() {
-        usedtempreg = usedfloatreg = 0;
+        usedtempreg = 0;
     }
     
     private Type getType(Token tok) {
@@ -174,6 +177,42 @@ public class Assembly {
                 return div(operand1, operand2);
             }
         }
+        
+        if(look.tag == '|') {
+            move();
+            if( look.tag == Tag.NUM || look.tag == Tag.REAL ) {
+                Register operand2 = loadimmediate((Num)look);
+                return bitwise_or(operand1, operand2);
+            }
+            else if( look.tag == Tag.ID ) {
+                Register operand2 = loadword((Word)look);
+                return bitwise_or(operand1, operand2);
+            }
+        }
+        
+        if(look.tag == '&') {
+            move();
+            if( look.tag == Tag.NUM || look.tag == Tag.REAL ) {
+                Register operand2 = loadimmediate((Num)look);
+                return bitwise_and(operand1, operand2);
+            }
+            else if( look.tag == Tag.ID ) {
+                Register operand2 = loadword((Word)look);
+                return bitwise_and(operand1, operand2);
+            }
+        }
+        
+        if(look.tag == '^') {
+            move();
+            if( look.tag == Tag.NUM || look.tag == Tag.REAL ) {
+                Register operand2 = loadimmediate((Num)look);
+                return bitwise_xor(operand1, operand2);
+            }
+            else if( look.tag == Tag.ID ) {
+                Register operand2 = loadword((Word)look);
+                return bitwise_xor(operand1, operand2);
+            }
+        }
         return operand1;
     }
     
@@ -211,6 +250,7 @@ public class Assembly {
             address = loadword((Word)look);
         move();
         if( look.tag == '>' ) {
+            System.out.println("> TAG found:");
             move();
             Register temp = rel();
             address = subt(address, temp);
@@ -248,8 +288,8 @@ public class Assembly {
         if( num.tag == Tag.NUM )
             address = new Temporary(num, Type.Int, usedtempreg++);
         else
-            address = new Float(num, Type.Float, usedfloatreg++);
-        emit("\t" + "li" + "\t" + address.getAddress() + ",\t" + address.toString());
+            address = new Temporary(num, Type.Int, usedtempreg++);
+        emit("\t" + "li" + "\t" + address.getAddress() + ",\t" + num.value);
         return address;
     }
     
@@ -265,7 +305,7 @@ public class Assembly {
         }
         else {
             Word word = new Word(var.toString() + "(" + index.toString() + ")", Tag.ID);
-            address = new Float(word, type, usedfloatreg++);
+            address = new Temporary(word, type, usedtempreg++);
         }
         emit("\t" + "lw" + "\t" + address.getAddress() + ",\t" + var.toString() +
                 "(" + index.toString() + ")");
@@ -282,9 +322,9 @@ public class Assembly {
             address = new Temporary(word, type, usedtempreg++);
         }
         else
-            address = new Float(word, type, usedfloatreg++);
-        emit("\t" + "lw" + "\t" + address.getAddress() + ",\t" + "(" +
-                address.toString() + ")");
+            address = new Temporary(word, type, usedtempreg++);
+        emit("\t" + "lw" + "\t" + address.getAddress() + ",\t" + 
+                address.toString() );
         return address;
     }
     
@@ -294,11 +334,11 @@ public class Assembly {
         if( operand2.tag == Tag.NUM )
             type = Type.max(operand1.type, Type.Int);
         else
-            type = Type.Float;
+            type = Type.Int;
         if( type == Type.Int )
             output = new Temporary(new Word(operand1.toString() + "+" + operand2.toString(), Tag.ID), type, operand1.getRegisterAddress());
         else
-            output = new Float(new Word(operand1.toString() + "+" + operand2.toString(), Tag.ID), type, operand1.getRegisterAddress());
+            output = new Temporary(new Word(operand1.toString() + "+" + operand2.toString(), Tag.ID), type, operand1.getRegisterAddress());
         emit("\t" + "addi" + "\t" + output.getAddress() + ",\t" + 
                 operand1.getAddress()+ ",\t" + operand2.toString());
         return output;
@@ -315,7 +355,7 @@ public class Assembly {
                 type, operand1.getRegisterAddress());
         }
         else {
-            output = new Float(new Word(operand1.toString() + "+" + operand2.toString(), Tag.ID),
+            output = new Temporary(new Word(operand1.toString() + "+" + operand2.toString(), Tag.ID),
                 type, operand1.getRegisterAddress());
         }
         emit("\t" + "add" + "\t" + output.getAddress() + ",\t" + 
@@ -329,11 +369,11 @@ public class Assembly {
         if( operand2.tag == Tag.NUM )
             type = Type.max(operand1.type, Type.Int);
         else
-            type = Type.Float;
+            type = Type.Int;
         if( type == Type.Int )
             output = new Temporary(new Word(operand1.toString() + "-" + operand1.toString(), Tag.ID), type, operand1.getRegisterAddress());
         else
-            output = new Float(new Word(operand1.toString() + "-" + operand2.toString(), Tag.ID), type, operand1.getRegisterAddress());
+            output = new Temporary(new Word(operand1.toString() + "-" + operand2.toString(), Tag.ID), type, operand1.getRegisterAddress());
         emit("\t" + "addi" + "\t" + output.getAddress() + ",\t" + 
                 operand1.getAddress()+ ",\t" + "-" + operand2.toString());
         return output;
@@ -345,11 +385,11 @@ public class Assembly {
         if( operand2.tag == Tag.NUM )
             type = Type.max(operand1.type, Type.Int);
         else
-            type = Type.Float;
+            type = Type.Int;
         if( type == Type.Int )
             output = new Temporary(new Word(operand1.toString() + "&" + operand2.toString(), Tag.ID), type, operand1.getRegisterAddress());
         else
-            output = new Float(new Word(operand1.toString() + "&" + operand2.toString(), Tag.ID), type, operand1.getRegisterAddress());
+            output = new Temporary(new Word(operand1.toString() + "&" + operand2.toString(), Tag.ID), type, operand1.getRegisterAddress());
         emit("\t" + "andi" + "\t" + output.getAddress() + ",\t" + 
                 operand1.getAddress()+ ",\t" + operand2.toString());
         return output;
@@ -361,11 +401,11 @@ public class Assembly {
         if( operand2.tag == Tag.NUM )
             type = Type.max(operand1.type, Type.Int);
         else
-            type = Type.Float;
+            type = Type.Int;
         if( type == Type.Int )
             output = new Temporary(new Word(operand1.toString() + "|" + operand2.toString(), Tag.ID), type, operand1.getRegisterAddress());
         else
-            output = new Float(new Word(operand1.toString() + "|" + operand2.toString(), Tag.ID), type, operand1.getRegisterAddress());
+            output = new Temporary(new Word(operand1.toString() + "|" + operand2.toString(), Tag.ID), type, operand1.getRegisterAddress());
         emit("\t" + "ori" + "\t" + output.getAddress() + ",\t" + 
                 operand1.getAddress()+ ",\t" + operand2.toString());
         return output;
@@ -377,11 +417,11 @@ public class Assembly {
         if( operand2.tag == Tag.NUM )
             type = Type.max(operand1.type, Type.Int);
         else
-            type = Type.Float;
+            type = Type.Int;
         if( type == Type.Int )
             output = new Temporary(new Word(operand1.toString() + "^" + operand2.toString(), Tag.ID), type, operand1.getRegisterAddress());
         else
-            output = new Float(new Word(operand1.toString() + "^" + operand2.toString(), Tag.ID), type, operand1.getRegisterAddress());
+            output = new Temporary(new Word(operand1.toString() + "^" + operand2.toString(), Tag.ID), type, operand1.getRegisterAddress());
         emit("\t" + "ori" + "\t" + output.getAddress() + ",\t" + 
                 operand1.getAddress()+ ",\t" + operand2.toString());
         return output;
@@ -398,13 +438,34 @@ public class Assembly {
                 type, operand1.getRegisterAddress());
         }
         else {
-            output = new Float(new Word(operand1.toString() + "-" + operand2.toString(), Tag.ID),
+            output = new Temporary(new Word(operand1.toString() + "-" + operand2.toString(), Tag.ID),
                 type, operand1.getRegisterAddress());
         }
         emit("\t" + "sub" + "\t" + output.getAddress() + ",\t" + 
                 operand1.getAddress()+ ",\t" + operand2.getAddress());
         return output;
     }
+    
+    private Register branchNotEqual(Register operand1, Register operand2) {
+        Register output;
+        Type type = Type.max(operand1.type, operand2.type);
+        if( type == Type.Int   ||
+            type == Type.Long  ||
+            type == Type.Short ||
+            type == Type.Byte   ) {
+            output = new Temporary(new Word(operand1.toString() + "-" + operand2.toString(), Tag.ID),
+                type, operand1.getRegisterAddress());
+        }
+        else {
+            output = new Temporary(new Word(operand1.toString() + "-" + operand2.toString(), Tag.ID),
+                type, operand1.getRegisterAddress());
+        }
+        emit("\t" + "bne" + "\t" + output.getAddress() + ",\t" + 
+                operand1.getAddress()+ ",\t" +"L" + operand1.toString() + ":");
+        return output;
+    }
+    
+    
     
     
     private Register mult(Register operand1, Register operand2) {
@@ -418,10 +479,10 @@ public class Assembly {
                 type, operand1.getRegisterAddress());
         }
         else {
-            output = new Float(new Word(operand1.toString() + "*" + operand2.toString(), Tag.ID),
+            output = new Temporary(new Word(operand1.toString() + "*" + operand2.toString(), Tag.ID),
                 type, operand1.getRegisterAddress());
         }
-        emit("\t" + "mult" + "\t" + output.getAddress() + ",\t" + 
+        emit("\t" + "mul" + "\t" + output.getAddress() + ",\t" + 
                 operand1.getAddress()+ ",\t" + operand2.getAddress());
         return output;
     }
@@ -437,10 +498,67 @@ public class Assembly {
                 type, operand1.getRegisterAddress());
         }
         else {
-            output = new Float(new Word(operand1.toString() + "/" + operand2.toString(), Tag.ID),
+            output = new Temporary(new Word(operand1.toString() + "/" + operand2.toString(), Tag.ID),
                 type, operand1.getRegisterAddress());
         }
         emit("\t" + "div" + "\t" + output.getAddress() + ",\t" + 
+                operand1.getAddress()+ ",\t" + operand2.getAddress());
+        return output;
+    }
+    
+   private Register bitwise_or(Register operand1, Register operand2) {
+        Register output;
+        Type type = Type.max(operand1.type, operand2.type);
+        if( type == Type.Int   ||
+            type == Type.Long  ||
+            type == Type.Short ||
+            type == Type.Byte   ) {
+            output = new Temporary(new Word(operand1.toString() + "|" + operand2.toString(), Tag.ID),
+                type, operand1.getRegisterAddress());
+        }
+        else {
+            output = new Temporary(new Word(operand1.toString() + "|" + operand2.toString(), Tag.ID),
+                type, operand1.getRegisterAddress());
+        }
+        emit("\t" + "or" + "\t" + output.getAddress() + ",\t" + 
+                operand1.getAddress()+ ",\t" + operand2.getAddress());
+        return output;
+    }
+   
+    private Register bitwise_and(Register operand1, Register operand2) {
+        Register output;
+        Type type = Type.max(operand1.type, operand2.type);
+        if( type == Type.Int   ||
+            type == Type.Long  ||
+            type == Type.Short ||
+            type == Type.Byte   ) {
+            output = new Temporary(new Word(operand1.toString() + "&" + operand2.toString(), Tag.ID),
+                type, operand1.getRegisterAddress());
+        }
+        else {
+            output = new Temporary(new Word(operand1.toString() + "&" + operand2.toString(), Tag.ID),
+                type, operand1.getRegisterAddress());
+        }
+        emit("\t" + "and" + "\t" + output.getAddress() + ",\t" + 
+                operand1.getAddress()+ ",\t" + operand2.getAddress());
+        return output;
+    }
+    
+    private Register bitwise_xor(Register operand1, Register operand2) {
+        Register output;
+        Type type = Type.max(operand1.type, operand2.type);
+        if( type == Type.Int   ||
+            type == Type.Long  ||
+            type == Type.Short ||
+            type == Type.Byte   ) {
+            output = new Temporary(new Word(operand1.toString() + "^" + operand2.toString(), Tag.ID),
+                type, operand1.getRegisterAddress());
+        }
+        else {
+            output = new Temporary(new Word(operand1.toString() + "^" + operand2.toString(), Tag.ID),
+                type, operand1.getRegisterAddress());
+        }
+        emit("\t" + "xor" + "\t" + output.getAddress() + ",\t" + 
                 operand1.getAddress()+ ",\t" + operand2.getAddress());
         return output;
     }
@@ -456,7 +574,7 @@ public class Assembly {
                 type, operand1.getRegisterAddress());
         }
         else {
-            output = new Float(new Word(operand1.toString() + "&" + operand2.toString(), Tag.ID),
+            output = new Temporary(new Word(operand1.toString() + "&" + operand2.toString(), Tag.ID),
                 type, operand1.getRegisterAddress());
         }
         emit("\t" + "and" + "\t" + output.getAddress() + ",\t" + 
@@ -475,7 +593,7 @@ public class Assembly {
                 type, operand1.getRegisterAddress());
         }
         else {
-            output = new Float(new Word(operand1.toString() + "|" + operand2.toString(), Tag.ID),
+            output = new Temporary(new Word(operand1.toString() + "|" + operand2.toString(), Tag.ID),
                 type, operand1.getRegisterAddress());
         }
         emit("\t" + "or" + "\t" + output.getAddress() + ",\t" + 
@@ -494,7 +612,7 @@ public class Assembly {
                 type, operand1.getRegisterAddress());
         }
         else {
-            output = new Float(new Word(operand1.toString() + "^" + operand2.toString(), Tag.ID),
+            output = new Temporary(new Word(operand1.toString() + "^" + operand2.toString(), Tag.ID),
                 type, operand1.getRegisterAddress());
         }
         emit("\t" + "xor" + "\t" + output.getAddress() + ",\t" + 
@@ -519,9 +637,11 @@ public class Assembly {
     }
     
     private void store(Token tok, Register address) {
-        emit("\t" + "move" + "\t" + tok.toString() + ",\t" + 
-                address.getAddress());
-        resetAddresses();
+        //emit("\t" + "move" + "\t" + tok.toString() + ",\t" + address.getAddress());
+        emit("\t" + "sw" + "\t" + address.getAddress() + ",\t" + 
+                tok.toString());
+        emitData(tok.toString(),0);
+        //resetAddresses();
     }
     
     private void store(Register address1, Register address2) {
@@ -533,5 +653,14 @@ public class Assembly {
     private void storearray(Token offset, Token index, Register address) {
         emit("\t" + "move" + "\t" + offset.toString() + "(" +
                 index.toString() + "),\t" + address.getAddress());
+    }
+    
+    public void emitData(String data, int value) {
+        
+        if(!wordList.contains(data)) {
+           
+        dataStr += data + ": .word " + value + "\n";
+        wordList.add(data);
+        }
     }
 }

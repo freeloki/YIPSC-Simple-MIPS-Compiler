@@ -13,5 +13,5 @@ public class Tag {
       IF    = 266,  INDEX   = 267,  LE    = 268,  MINUS    = 269,   NE   = 270, 
       NUM   = 271,  OR      = 272,  REAL  = 273,  TEMP     = 274,   TRUE = 275, 
       WHILE = 276,  GOTO    = 277,  LABEL = 278,  IFFALSE  = 279,   END  = 280,
-      RETURN = 281;
+      RETURN = 281, FUNC    = 282,  NOR   = 283; 
 }

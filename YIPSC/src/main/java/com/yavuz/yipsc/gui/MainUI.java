@@ -97,6 +97,7 @@ public class MainUI extends javax.swing.JFrame {
         setIconImages(null);
         setLocation(new java.awt.Point(100, 100));
         setModalExclusionType(java.awt.Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
+        setResizable(false);
 
         cCodeTextArea.setColumns(20);
         cCodeTextArea.setRows(5);
@@ -204,14 +205,14 @@ public class MainUI extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(uploadCodeBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(verifyCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(verifyCodeBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(Tokenize)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(compileCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(compileCodeBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(clearAllBtn)
-                        .addGap(337, 337, 337)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 337, Short.MAX_VALUE)))
                 .addGap(18, 18, 18)
                 .addComponent(infoLabel)
                 .addGap(1, 1, 1)
@@ -226,7 +227,7 @@ public class MainUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void uploadCodeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadCodeBtnActionPerformed
-        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        JFileChooser jfc = new JFileChooser(".");
 
         FileNameExtensionFilter filter = new FileNameExtensionFilter("C or CPP FILES", "c", "cpp");
 

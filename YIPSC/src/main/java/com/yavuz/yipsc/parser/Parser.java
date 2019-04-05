@@ -32,7 +32,7 @@ public class Parser {
     }
 
     void match(int t) throws IOException {
-       // System.out.println("LOOK TAG: " + (char)look.tag + " T: " + (char)t);
+        System.out.println("LOOK TAG: " + (char)look.tag + " T: " + (char) t);
         if (look.tag == t) {
             move();
         } else {
@@ -110,6 +110,7 @@ public class Parser {
         Stmt s, s1, s2;
         Stmt savedStmt;         // save enclosing loop for breaks
 
+        System.out.println("AWESOME LOOK TAG. " + look.tag);
         switch (look.tag) {
 
             case ';':
@@ -141,6 +142,9 @@ public class Parser {
                 whilenode.init(x, s1);
                 Stmt.Enclosing = savedStmt;  // reset Stmt.Enclosing
                 return whilenode;
+                
+            case Tag.FUNC:
+                
 
             case Tag.DO:
                 Do donode = new Do();
@@ -248,7 +252,7 @@ public class Parser {
 
     Expr expr() throws IOException {
         Expr x = term();
-        while (look.tag == '+' || look.tag == '-') {
+        while (look.tag == '+' || look.tag == '-' || look.tag == '|' || look.tag == '&' || look.tag == '^') {
             Token tok = look;
             move();
             x = new Arith(tok, x, term());

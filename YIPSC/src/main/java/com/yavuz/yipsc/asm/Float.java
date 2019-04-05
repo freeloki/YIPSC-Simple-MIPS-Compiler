@@ -13,7 +13,7 @@ public class Float extends Register {
     
     @Override
     public String getAddress() {
-        return "" + "$f" + address;
+        return "" + "$t" + address;
     }
     
     @Override

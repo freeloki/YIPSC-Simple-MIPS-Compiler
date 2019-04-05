@@ -16,6 +16,7 @@
     <Property name="modalExclusionType" type="java.awt.Dialog$ModalExclusionType" editor="org.netbeans.modules.form.editors.EnumEditor">
       <Value id="APPLICATION_EXCLUDE"/>
     </Property>
+    <Property name="resizable" type="boolean" value="false"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -90,14 +91,14 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="uploadCodeBtn" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="verifyCodeBtn" max="32767" attributes="0"/>
+                      <Component id="verifyCodeBtn" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="Tokenize" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="compileCodeBtn" max="32767" attributes="0"/>
+                      <Component id="compileCodeBtn" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="clearAllBtn" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="337" max="-2" attributes="0"/>
+                      <EmptySpace pref="337" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
