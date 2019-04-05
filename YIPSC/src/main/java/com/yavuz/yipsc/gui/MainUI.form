@@ -16,9 +16,6 @@
     <Property name="modalExclusionType" type="java.awt.Dialog$ModalExclusionType" editor="org.netbeans.modules.form.editors.EnumEditor">
       <Value id="APPLICATION_EXCLUDE"/>
     </Property>
-    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[1000, 800]"/>
-    </Property>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -43,29 +40,34 @@
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
                   <Component id="infoInputLabel" max="32767" attributes="0"/>
-                  <Component id="infoLabel" alignment="0" min="-2" pref="814" max="-2" attributes="0"/>
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="infoLabel" min="-2" pref="814" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="jScrollPane1" max="32767" attributes="0"/>
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jScrollPane1" min="-2" pref="409" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" pref="23" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
                               <Component id="explanationLabel" max="32767" attributes="0"/>
-                              <EmptySpace min="-2" pref="128" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="111" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <Component id="uploadCodeBtn" max="32767" attributes="0"/>
-                              <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
-                              <Component id="verifyCodeBtn" max="32767" attributes="0"/>
-                              <EmptySpace min="-2" pref="54" max="-2" attributes="0"/>
-                              <Component id="Tokenize" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
-                              <Component id="compileCodeBtn" max="32767" attributes="0"/>
+                              <Component id="jScrollPane2" min="-2" pref="397" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="verifyCodeBtn" min="-2" pref="139" max="-2" attributes="0"/>
+                                  <Component id="Tokenize" min="-2" pref="139" max="-2" attributes="0"/>
+                                  <Component id="compileCodeBtn" alignment="0" min="-2" pref="139" max="-2" attributes="0"/>
+                                  <Component id="clearAllBtn" min="-2" pref="139" max="-2" attributes="0"/>
+                                  <Component id="uploadCodeBtn" alignment="0" min="-2" pref="139" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
-                          <Component id="jScrollPane2" max="32767" attributes="0"/>
+                          <Component id="jLabel1" min="-2" pref="154" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -76,23 +78,27 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="14" pref="14" max="-2" attributes="0"/>
-                      <Component id="explanationLabel" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="uploadCodeBtn" alignment="3" max="32767" attributes="0"/>
-                      <Component id="verifyCodeBtn" alignment="3" max="32767" attributes="0"/>
-                      <Component id="compileCodeBtn" alignment="3" max="32767" attributes="0"/>
-                      <Component id="Tokenize" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+              <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="explanationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jScrollPane1" max="32767" attributes="0"/>
-                  <Component id="jScrollPane2" alignment="1" pref="504" max="32767" attributes="0"/>
+                  <Component id="jScrollPane2" alignment="1" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="uploadCodeBtn" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="verifyCodeBtn" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="Tokenize" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="compileCodeBtn" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="clearAllBtn" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="337" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
               <Component id="infoLabel" min="-2" max="-2" attributes="0"/>
@@ -202,6 +208,25 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="TokenizeActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="clearAllBtn">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Noto Sans" size="12" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Clear"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="clearAllBtnActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel1">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Noto Sans" size="12" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="MIPS Assembly Output"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

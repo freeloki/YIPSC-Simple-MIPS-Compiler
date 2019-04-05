@@ -5,6 +5,10 @@
  */
 package com.yavuz.yipsc.gui;
 
+import com.yavuz.yipsc.asm.Assembly;
+import com.yavuz.yipsc.lexer.LexInter;
+import com.yavuz.yipsc.lexer.Lexer;
+import com.yavuz.yipsc.parser.Parser;
 import com.yavuz.yipsc.utils.CCompiler;
 import com.yavuz.yipsc.utils.Tokenizer;
 import java.awt.Color;
@@ -18,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -38,32 +43,29 @@ import javax.swing.filechooser.FileSystemView;
  * @author codegenius
  */
 public class MainUI extends javax.swing.JFrame {
-    
-     private String fileAsString;
-     private String filePath;
-     private CCompiler cCompiler;
+
+    private static final String TEMP_FILE_NAME = "temp.c";
+    private String fileAsString;
+    private String filePath;
+    private CCompiler cCompiler;
 
     /**
      * Creates new form MainUI
      */
     public MainUI() throws IOException {
-        initComponents(); 
+        initComponents();
         cCompiler = new CCompiler();
-                      
-     // ImageIcon ii = ImageIcon(this.getClass().getResource("/resources/appIcon.png"));
 
-        BufferedImage  image  = ImageIO.read(new File("src/resources/appIcon.png"));
+        // ImageIcon ii = ImageIcon(this.getClass().getResource("/resources/appIcon.png"));
+        BufferedImage image = ImageIO.read(new File("src/resources/appIcon.png"));
         final List<Image> icons = new ArrayList<Image>();
         icons.add(image);
         icons.add(image);
-        
-       JFrame mainFrame = (JFrame) getFrames()[0];
-       mainFrame.setIconImages(icons);
-       mainFrame.setVisible(true);
-       
-       
-       
-               
+
+        JFrame mainFrame = (JFrame) getFrames()[0];
+        mainFrame.setIconImages(icons);
+        mainFrame.setVisible(true);
+
     }
 
     /**
@@ -86,6 +88,8 @@ public class MainUI extends javax.swing.JFrame {
         infoLabel = new javax.swing.JLabel();
         infoInputLabel = new javax.swing.JLabel();
         Tokenize = new javax.swing.JButton();
+        clearAllBtn = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("YIPSC");
@@ -93,7 +97,6 @@ public class MainUI extends javax.swing.JFrame {
         setIconImages(null);
         setLocation(new java.awt.Point(100, 100));
         setModalExclusionType(java.awt.Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
-        setPreferredSize(new java.awt.Dimension(1000, 800));
 
         cCodeTextArea.setColumns(20);
         cCodeTextArea.setRows(5);
@@ -144,6 +147,17 @@ public class MainUI extends javax.swing.JFrame {
             }
         });
 
+        clearAllBtn.setFont(new java.awt.Font("Noto Sans", 1, 12)); // NOI18N
+        clearAllBtn.setText("Clear");
+        clearAllBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearAllBtnActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Noto Sans", 1, 12)); // NOI18N
+        jLabel1.setText("MIPS Assembly Output");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -152,44 +166,52 @@ public class MainUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(infoInputLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(infoLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 814, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(infoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 814, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 23, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(explanationLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(128, 128, 128)))
+                                .addGap(111, 111, 111)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(uploadCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(37, 37, 37)
-                                .addComponent(verifyCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(54, 54, 54)
-                                .addComponent(Tokenize)
-                                .addGap(53, 53, 53)
-                                .addComponent(compileCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jScrollPane2))))
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(verifyCodeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(Tokenize, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(compileCodeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(clearAllBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(uploadCodeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(explanationLabel))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(uploadCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(verifyCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(compileCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(Tokenize)))
+                .addGap(26, 26, 26)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(explanationLabel)
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(uploadCodeBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(verifyCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(Tokenize)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(compileCodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(clearAllBtn)
+                        .addGap(337, 337, 337)))
                 .addGap(18, 18, 18)
                 .addComponent(infoLabel)
                 .addGap(1, 1, 1)
@@ -204,88 +226,127 @@ public class MainUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void uploadCodeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadCodeBtnActionPerformed
-       JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 
-       FileNameExtensionFilter filter = new FileNameExtensionFilter("C or CPP FILES", "c","cpp");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("C or CPP FILES", "c", "cpp");
 
-                jfc.setDialogTitle("Please choose C file to compile");
-                jfc.setFileFilter(filter);
-		int returnValue = jfc.showOpenDialog(null);
-		// int returnValue = jfc.showSaveDialog(null);
+        jfc.setDialogTitle("Please choose C file to compile");
+        jfc.setFileFilter(filter);
+        int returnValue = jfc.showOpenDialog(null);
+        // int returnValue = jfc.showSaveDialog(null);
 
-		if (returnValue == JFileChooser.APPROVE_OPTION) {
-			File selectedFile = jfc.getSelectedFile();
-			System.out.println(selectedFile.getAbsolutePath());
-                        filePath = selectedFile.getAbsolutePath();
-                        
-           try {
-               InputStream is = new FileInputStream(selectedFile);
-               BufferedReader buf = new BufferedReader(new InputStreamReader(is));
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = jfc.getSelectedFile();
+            System.out.println(selectedFile.getAbsolutePath());
+            filePath = selectedFile.getAbsolutePath();
 
-               String line = buf.readLine();
-               StringBuilder sb = new StringBuilder(); 
-               while(line != null){ 
-                   sb.append(line).append("\n"); 
-                   line = buf.readLine(); 
-               }
-               fileAsString = sb.toString();
-               
-               System.out.println("file:\n" + fileAsString);
-     
-               
-               cCodeTextArea.setText(fileAsString);
+            try {
+                InputStream is = new FileInputStream(selectedFile);
+                BufferedReader buf = new BufferedReader(new InputStreamReader(is));
 
-           } catch (FileNotFoundException ex) {
-               Logger.getLogger(MainUI.class.getName()).log(Level.SEVERE, null, ex);
-           } catch (IOException ex) {
-               Logger.getLogger(MainUI.class.getName()).log(Level.SEVERE, null, ex);
-           }
-                        
-        
-		}
+                String line = buf.readLine();
+                StringBuilder sb = new StringBuilder();
+                while (line != null) {
+                    sb.append(line).append("\n");
+                    line = buf.readLine();
+                }
+                fileAsString = sb.toString();
+
+                System.out.println("file:\n" + fileAsString);
+
+                cCodeTextArea.setText(fileAsString);
+
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(MainUI.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(MainUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
     }//GEN-LAST:event_uploadCodeBtnActionPerformed
 
     private void verifyCodeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verifyCodeBtnActionPerformed
-        // TODO add your handling code here:
-       /// infoInputLabel.setText("Code verifying is not supported for now.");
-        //infoInputLabel.setForeground(Color.red);
-        
-        boolean result = cCompiler.compileCFile(filePath);
-        
-        System.out.println("RESULT :" + result);
-        if(result) {
-            infoInputLabel.setText("Code compilation successful!");
-            infoInputLabel.setForeground(Color.BLUE);
-            Font f = infoInputLabel.getFont();
-            infoInputLabel.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
-        } else {
-            infoInputLabel.setText("Code compilation failure. Please check your code.");
-            infoInputLabel.setForeground(Color.RED);
-            Font f = infoInputLabel.getFont();
-            infoInputLabel.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
+
+        if (cCodeTextArea != null && !cCodeTextArea.getText().isEmpty()) {
+            try {
+                try ( // TODO add your handling code here:
+                /// infoInputLabel.setText("Code verifying is not supported for now.");
+                //infoInputLabel.setForeground(Color.red);
+                // create a temporary file here.
+                    PrintWriter saveOutput = new PrintWriter(TEMP_FILE_NAME)) {
+                    System.out.println("cCodeArea:\n"+ cCodeTextArea.getText());
+                    saveOutput.print(cCodeTextArea.getText());
+                }
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(MainUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            boolean result = cCompiler.compileCFile(TEMP_FILE_NAME);
+
+            System.out.println("RESULT :" + result);
+            if (result) {
+                infoInputLabel.setText("Code compilation successful!");
+                infoInputLabel.setForeground(Color.BLUE);
+                Font f = infoInputLabel.getFont();
+                infoInputLabel.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
+            } else {
+                infoInputLabel.setText("Code compilation failure. Please check your code.");
+                infoInputLabel.setForeground(Color.RED);
+                Font f = infoInputLabel.getFont();
+                infoInputLabel.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
+            }
         }
-            
     }//GEN-LAST:event_verifyCodeBtnActionPerformed
 
     private void compileCodeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileCodeBtnActionPerformed
         // TODO add your handling code here:
-        
-       
+
+
     }//GEN-LAST:event_compileCodeBtnActionPerformed
 
     private void TokenizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TokenizeActionPerformed
         // TODO add your handling code here:
-        
-        Tokenizer mTokenizer = new Tokenizer(fileAsString);
-        
-       cCodeTextArea.setText(mTokenizer.reduceBlanksToOne());
-       cCodeTextArea.setText(mTokenizer.removeIncludesAndComments());
-       
-       mTokenizer.parseIntegerVariables();
-       
-       mTokenizer.parseOperations();
-         
+
+        fileAsString = cCodeTextArea.getText();
+        if (!fileAsString.isEmpty()) {
+            try {
+                Tokenizer mTokenizer = new Tokenizer(fileAsString);
+                
+                cCodeTextArea.setText(mTokenizer.reduceBlanksToOne());
+                cCodeTextArea.setText(mTokenizer.removeIncludesAndComments());
+                
+                // mTokenizer.parseIntegerVariables();
+                
+                // mTokenizer.parseOperations();
+                
+               cCodeTextArea.setText(mTokenizer.parseMainFunction());
+                
+                String optimized = cCodeTextArea.getText();
+                
+                LexInter li = new LexInter();
+                Assembly assemb = new Assembly(li);
+                Lexer lex = new Lexer(optimized);
+                Parser parse = new Parser(lex, assemb);
+                
+                System.out.println("<Intermediate code>");
+                parse.program();
+                System.out.write('\n');
+                System.out.println();
+                System.out.println("<Assembly code>");
+                mipsCodeTextArea.setText(assemb.program());
+            } catch (IOException ex) {
+                Logger.getLogger(MainUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
     }//GEN-LAST:event_TokenizeActionPerformed
+
+    private void clearAllBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearAllBtnActionPerformed
+        // TODO add your handling code here:
+
+        cCodeTextArea.setText("");
+        mipsCodeTextArea.setText("");
+    }//GEN-LAST:event_clearAllBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -329,10 +390,12 @@ public class MainUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Tokenize;
     private javax.swing.JTextArea cCodeTextArea;
+    private javax.swing.JButton clearAllBtn;
     private javax.swing.JButton compileCodeBtn;
     private javax.swing.JLabel explanationLabel;
     private javax.swing.JLabel infoInputLabel;
     private javax.swing.JLabel infoLabel;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea mipsCodeTextArea;

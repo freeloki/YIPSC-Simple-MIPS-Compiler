@@ -29,6 +29,7 @@ public class Tokenizer {
 
     public String reduceBlanksToOne() {
         codeToken = codeToken.trim().replaceAll(" +", " ");
+        codeToken = codeToken.trim().replaceAll("\\t", "");
         System.out.print("ParseCode:\n" + codeToken);
         return codeToken;
     }
@@ -87,6 +88,22 @@ public class Tokenizer {
         for (IntegerVariable var : intVariables) {
             System.out.println("Var Name: " + var.variableName + " Var Value: " + var.value);
         }
+    }
+
+    public String parseMainFunction() {
+
+        String lines[] = codeToken.split("\\r?\\n");
+
+        String newString = "";
+        for (int i = 0; i < lines.length; i++) {
+            if (lines[i].contains("void main()") || lines[i].contains("int main()")) {
+                continue;
+            }
+            newString+=lines[i];
+        }
+
+        codeToken = newString;
+        return codeToken;
     }
 
     public void parseOperations() {
@@ -155,8 +172,8 @@ public class Tokenizer {
 
             if (!" ".equals(exp[i])) {
                 String c = exp[i];
-                
-                System.out.println("C: "+ c);
+
+                System.out.println("C: " + c);
 
                 // If the scanned character is an operand, add it to output. 
                 if (pattern.matcher(c).matches()) {
