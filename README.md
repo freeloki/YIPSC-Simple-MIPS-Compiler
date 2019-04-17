@@ -4,15 +4,16 @@
 ## TODO List
 - [x] Design an awesome UI.
 - [x] Code it on Swing
-- [ ] Check input file or copy/pasted C code syntax failure if there is an available compiler. (For now just try GCC)
-- [ ] Understand A SIMPLE SYNTAX-DIRECTED TRANSLATOR from Dragon Book.
-- [ ] Add language BNF
-- [ ] Implement awesome tokenizer
-- [ ] Parse the file.
-- [ ] Update here.
-- [ ] Update here.
-- [ ] Update here.
-- [ ] Update here.
-- [ ] Update here.
-- [ ] Document restrictions and corner cases.
-- [ ] Test & Play
+- [x] Check input file or copy/pasted C code syntax failure if there is an available compiler. (For now just try GCC)
+- [x] Understand A SIMPLE SYNTAX-DIRECTED TRANSLATOR from Dragon Book.
+- [x] Add language BNF
+- [x] Implement awesome tokenizer
+- [x] Parse the file.
+- [x] Show the resutls at the same screen.
+- [x] Support logical **and**, **or**, **xor**, **xnor**, **not**, **exor**, **nand** and bitwise operations.
+- [x] While support.
+- [x] If support.
+- [x] Printf support.
+- [x] Divide and multiply.
+- [x] Document restrictions and corner cases.
+- [x] Test & Play
